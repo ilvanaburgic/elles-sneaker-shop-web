@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-B4dIYHKNm14HhAzFjRBDB0CrZL7y5sovTgxgVsieD95zY3+dxF1+nA6HWEX3Tv2B" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/spapp.css">
+
+    <script src="./assets/js/jquery.js"></script>
+    <script src="./assets/js/jquery.spapp.min.js"></script>
+</head>
+
+<body>
+
+<!--HEADER SECTION-->
+  <section id="header"> 
+    <header>
+      <nav role="navigation">
+
+        <ul id="navbar">
+          <img src="Pictures/LOGO.png" class="LOGO" alt="">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#shop">Shop</a></li>                         
+          <li><a href="#about">About</a></li>
+          <li><a href="#cart">Cart</a></li>
+          <li><a href="#login">Admin</a></li>
+          <button id="logout-button" onclick="logout()">Logout</button>
+        </ul>
+      </nav>
+    </header> 
+  </section>
+
+<!--PAGE CONTENT-->    
+  <section id="pageContent">
+    <main id="spapp" role="main">
+      <section id="home" data-load="home.html"></section>
+      <section id="shop" data-load="shop.html"></section>
+      <section id="sproduct" data-load="sproduct.html"></section>
+      <section id="sproductAdministrator" data-load="sproductAdministrator.html"></section>
+      <section id="about" data-load="about.html"></section>
+      <section id="cart" data-load="cart.html"></section>
+      <section id="profile" data-load="profile.html"></section>
+      <section id="login" data-load="login.html"></section>
+      <section id="administrator" data-load="administrator.html"></section>
+    </main>
+  </section>
+
+
+
+<!--FOOTER SECTION-->
+  <footer class="section-p1">
+    <a href="#"><img src="Pictures/LOGO.png" class="LOGO" alt=""></a>
+  
+    <div class="col">
+      <h4>Contact</h4>
+      <p><strong>Phone:</strong> +387 60 1234 567</p>
+      <p><strong>Hours:</strong> 09:00 - 15:00. Monday - Friday</p>
+    </div>
+    <div class="col">
+      <h4>About</h4>
+      <a href="#about">About us</a>
+    </div>
+  </footer>
+
+<script src="./utils/utils.js"></script>
+<script src="./assets/js/script.js"></script>
+<script>
+  if (!Utils.get_from_localstorage("user")) {
+    $("#logout-button")
+          .hide();
+  }
+  function logout() {
+    Utils.logout();
+    $("#logout-button")
+          .hide();
+  }
+</script>
+
+</body>
+</html>

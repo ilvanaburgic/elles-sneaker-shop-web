@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<body>
+
+  <!--PROFILE SECTION-->
+
+  <section id="profile-section">
+
+    <div class="Profile-settings">
+      <h2>Profile Settings</h2>
+    </div>
+
+    <div class="Name">
+      <label>Name</label>
+      <input type="text" class="form-control" placeholder="First name" value="" required>
+    </div>
+
+    <div class="Surname">
+      <label>Surname</label>
+      <input type="text" class="form-control" placeholder="Surname" value="" required>
+    </div>
+
+    <div class="Address">
+      <label>Address</label>
+      <input type="text" class="form-control" placeholder="Enter address" value="" required>
+    </div>
+
+    <div class="PostCode">
+      <label>Postcode</label>
+      <input type="text" class="form-control" placeholder="Enter postcode" value="" required>
+    </div>
+
+    <div class="Country">
+      <label class>Country</label>
+      <input type="text" class="form-control" placeholder="Country" value="" required>
+    </div>
+
+    <div class="Number">
+      <label>Number</label>
+      <input type="text" class="form-control" placeholder="+387 " value="" required>
+    </div>
+
+    <div class="button">
+      <button class="normal" id="buyButton" type="button">BUY</button>
+      <div class="successMessage" id="successMessage">Success!</div>
+
+    </div>
+    </div>
+  </section>
+
+  <script>
+    //ovaj blok koda provjerava jesu li podaci dobro uneseni u "Profile Setting"
+    function validateProfileSettings() {
+      const name = document.querySelector('#profile-section .Name input').value.trim();
+      const surname = document.querySelector('#profile-section .Surname input').value.trim();
+      const address = document.querySelector('#profile-section .Address input').value.trim();
+      const postcode = document.querySelector('#profile-section .PostCode input').value.trim();
+      const country = document.querySelector('#profile-section .Country input').value.trim();
+      const number = document.querySelector('#profile-section .Number input').value.trim();
+
+
+      if (name && surname && address && postcode && country && number) {
+        const successMessage = document.getElementById("successMessage");
+        successMessage.style.display = "block";
+
+        setTimeout(() => {
+          successMessage.style.display = "none";
+          window.location.hash = "home";
+        }, 2000);
+      } else {
+        alert("Please fill out all fields.");
+      }
+    }
+    document.getElementById("buyButton").addEventListener("click", validateProfileSettings);
+  </script>
+  <script src="script.js"></script>
+</body>
+
+<!--NEWSLETTER SECTION-->
+<section id="newsletter" class="section-p1 section-m1">
+  <div class="newtext">
+    <h4>Sign Up For Newsletters</h4>
+    <p>Get E-mail updates about our latest shop and <span>special offers</span>.</p>
+  </div>
+
+  <div class="form">
+    <input type="text" placeholder="Your email address" id="emailInput">
+    <button class="normal" onclick="subscribeNewsletter()">Sign Up</button>
+    <span id="emailMessage" class="email-error-message"></span>
+  </div>
+</section>
+
+<!--PORUKA ZA EMAIL-->
+<script>
+  function subscribeNewsletter() {
+    var email = document.getElementById('emailInput').value;
+    var messageElement = document.getElementById('emailMessage');
+
+    if(email && email.includes('@')) {
+      $.ajax({
+        url: 'http://localhost:5501/backend/subscribe', // Adjust the URL to where your subscribe endpoint is located
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ email: email }),
+        success: function(response) {
+          // Assume the response contains an object with a message property
+          messageElement.textContent = response.message;
+          messageElement.style.color = 'green';
+        },
+        error: function(xhr, status, error) {
+          // Handle errors here
+          messageElement.textContent = 'Subscription failed: ' + error;
+          messageElement.style.color = 'red';
+        }
+      });
+    } else {
+      messageElement.textContent = 'Please enter a valid email!';
+      messageElement.style.color = 'red';
+    }
+  }
+</script>
+
+
+</html>

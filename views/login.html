@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Ensure jQuery is included -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <!--LOGIN SECTION-->
+
+  <section id="login-section">
+
+    <div class="login-settings">
+      <h2>Login Profile</h2>
+    </div>
+
+    <div class="Name">
+      <label>Email</label>
+      <input type="email" id="email" class="form-control" placeholder="Enter your email address">
+    </div>
+
+    <div class="Password">
+      <label>Password</label>
+      <input type="password" id="password" class="form-control" placeholder="Enter your password">
+    </div>
+
+    <div class="button">
+      <button class="registrate-button" type="button" onclick="loginUser()">
+        Login
+      </button>
+      <div id="loginMessage"></div>
+    </div>
+
+  </section>
+
+  <script src="../utils/utils.js"></script>
+  <script>
+    function loginUser() {
+      var email = $('#email').val();
+      var password = $('#password').val();
+
+      $.ajax({
+        url: 'http://localhost:5501/backend/login/', 
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ email: email, password: password }),
+        success: function (response) {
+          Utils.set_to_localstorage("user", response);
+          console.log('Login successful', response);
+          window.location.hash = '#administrator';
+          $("#logout-button")
+          .show();
+        },
+        error: function (xhr, status, error) {
+          console.error('Login failed', xhr.responseText);
+          $('#loginMessage').text('Login failed: ' + xhr.responseText).css('color', 'red');
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
+

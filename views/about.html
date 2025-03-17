@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+  <!--TITLE SECTION-->
+
+  <section id="page-header-aboutMe">
+    <h1>Welcome to Elles shop</h1>
+  </section>
+
+  <!--TEXT SECTION-->
+
+  <section id="page-ispod-headera">
+    <h5>Welcome to Elles - your destination for premium Nike sneakers for every occasion. At Elles, the passion for
+      innovative design, top-notch quality, <br>and unparalleled comfort of the Nike brand is combined with our
+      commitment to providing excellent service and shopping experience.
+      <br>Through our wide range of Nike sneakers, we offer the latest models and iconic styles that suit every occasion
+      - from sports activities to casual everyday<br> wear and everything in between. Whether you're a running
+      enthusiast, fitness fanatic, or simply love a modern<br> and comfortable look, you'll find the perfect pair of
+      Nike sneakers for you at Elles.
+      <br>
+      <br>
+      <br>Our team of experts is here to provide you with personalized <br>support and recommendations when choosing the
+      sneakers that best fit your needs and style.
+      <br>Thank you for choosing Elles for your Nike sneaker purchases. We look forward to helping you find the perfect
+      pair that reflects your style and needs.
+    </h5>
+  </section>
+</body>
+
+<!--NEWSLETTER SECTION-->
+<section id="newsletter" class="section-p1 section-m1">
+  <div class="newtext">
+    <h4>Sign Up For Newsletters</h4>
+    <p>Get E-mail updates about our latest shop and <span>special offers</span>.</p>
+  </div>
+
+  <div class="form">
+    <input type="text" placeholder="Your email address" id="emailInput">
+    <button class="normal" onclick="subscribeNewsletter()">Sign Up</button>
+    <span id="emailMessage" class="email-error-message"></span>
+  </div>
+</section>
+
+<!--PORUKA ZA EMAIL-->
+<script>
+  function subscribeNewsletter() {
+    var email = document.getElementById('emailInput').value;
+    var messageElement = document.getElementById('emailMessage');
+
+    if(email && email.includes('@')) {
+      $.ajax({
+        url: 'http://localhost:5501/backend/subscribe', // Adjust the URL to where your subscribe endpoint is located
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ email: email }),
+        success: function(response) {
+          // Assume the response contains an object with a message property
+          messageElement.textContent = response.message;
+          messageElement.style.color = 'green';
+        },
+        error: function(xhr, status, error) {
+          // Handle errors here
+          messageElement.textContent = 'Subscription failed: ' + error;
+          messageElement.style.color = 'red';
+        }
+      });
+    } else {
+      messageElement.textContent = 'Please enter a valid email!';
+      messageElement.style.color = 'red';
+    }
+  }
+</script>
+
+
+</html>

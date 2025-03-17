@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+  <!--PAGE SECTION-->
+  <section id="page-administrator-header">
+    <h1>Administrator section!</h1>
+  </section>
+
+  <!--SNEAKERS SECTION-->
+  <section id="product1" class="section-p1">
+    <div id="pro-container" class="pro-container">
+      <!-- proizvodi ce se dinamicki ucitat ovdje pomocu Ajaxa -->
+    </div>
+  </section>
+
+  <div class="CREATE">
+    <button class="normal-add-button">Add</button> <!-- Add button -->
+  </div>
+
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="addForm">
+        <label for="addProductName">Product Name:</label>
+        <input type="text" id="addProductName" name="productName">
+
+        <label for="addProductPrice">Price:</label>
+        <input type="text" id="addProductPrice" name="productPrice">
+
+        <label for="addProductDescription">Description:</label>
+        <textarea id="addProductDescription" name="productDescription"></textarea>
+
+        <label for="addProductImage">Image URL:</label>
+        <input type="text" id="addProductImage" name="productImage">
+
+        <input type="submit" value="Add Product">
+      </form>
+    </div>
+  </div>
+
+  <script src="../utils/utils.js"></script>
+  <script>
+    function cleanInput(input) {
+      return input.replace(/[\x00-\x1F\x7F-\x9F]/g, ""); // Uklanja kontrolne znakove
+    }
+    
+    $(document).ready(function() {
+      var addModal = $('#addModal');
+      var addButton = $('.normal-add-button');
+      var addCloseButton = $('.close');
+
+      addButton.on('click', function() {
+        addModal.show();
+      });
+
+      addCloseButton.on('click', function() {
+        addModal.hide();
+      });
+
+      $('#addForm').submit(function(event) {
+        event.preventDefault();
+
+        var productData = {
+          name: cleanInput($('#addProductName').val()),
+          price: cleanInput($('#addProductPrice').val()),
+          description: cleanInput($('#addProductDescription').val()),
+          image: cleanInput($('#addProductImage').val()),
+          brand: 'NIKE'
+        };
+
+        console.log(JSON.stringify(productData));
+
+        var token = Utils.get_from_localstorage("user").token;
+        if (!token) {
+          alert("Authentication token is missing!");
+          return;
+        }
+
+        $.ajax({
+          url: 'http://localhost:5501/backend/products',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(productData),
+          beforeSend: function (xhr) {
+          if (Utils.get_from_localstorage("user")) {
+            xhr.setRequestHeader(
+              "Authorization",
+              Utils.get_from_localstorage("user").token
+            );
+          }
+        },
+          success: function(response) {
+            alert('Product added successfully!');
+            addModal.hide();
+          },
+          error: function(xhr) {
+            alert('Error adding product: ' + xhr.responseText);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

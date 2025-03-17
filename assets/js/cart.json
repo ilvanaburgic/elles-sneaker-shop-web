@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "NIKE Air Force 1 '07",
+    "description": "Nike",
+    "price": 143.99,
+    "image": "Pictures/sneakers.1.1.jpeg",
+    "brand": "Nike"
+  },
+  {
+    "id": 2,
+    "name": "NIKE Air Force 1 '07",
+    "description": "Opis proizvoda 2",
+    "price": 227.99,
+    "image": "Pictures/sneakers.2.1.jpeg",
+    "brand": "Nike"
+  },
+  {
+    "id": 3,
+    "name": "NIKE Air Force 1 Shadow",
+    "description": "Opis proizvoda 1",
+    "price": 155.99,
+    "image": "Pictures/sneakers.3.1.jpeg",
+    "brand": "Nike"
+  }
+]

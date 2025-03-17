@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+  <!--PHOTO AND TITLE SECTION-->
+
+  <section id="page-header-cart" class="about-header">
+    <h1>shop now!</h1>
+    <p>Buy smart</p>
+  </section>
+
+  <!--"TABLE WITH ITEMS" SECTION-->
+
+  <section id="cart" class="section-p1">
+    <table width="100%">
+      <thead>
+        <tr>
+          <td>Image</td>
+          <td>Product</td>
+          <td>Price</td>
+          <td>Subtotal</td>
+        </tr>
+      </thead>
+      <tbody id="cart-container"></tbody>
+    </table>
+  </section>
+
+  <!--CART TOTAL SECTION-->
+
+  <section id="cart-add" class="section-p1">
+    <div id="subtotal">
+      <h3>Cart Totals</h3>
+      <table>
+        <tr>
+          <td>Cart Subtotal</td>
+          <td> </td>
+        </tr>
+        <tr>
+          <td>Shipping</td>
+          <td>Free</td>
+        </tr>
+        <tr>
+          <td><strong>Total</strong></td>
+          <td><strong> </strong></td>
+        </tr>
+      </table>
+      <input class="form-control" type="text" id="userName" placeholder="Your Name">
+      <input style="margin-top: 10px;" class="form-control" type="email" id="userEmail" placeholder="Your Email">
+      <div style="margin-top: 10px;" class="cart-button" onclick="makeOrder()">
+        Buy
+      </div>
+    </div>
+  </section>
+</body>
+
+
+<script>
+  function makeOrder() {
+    const userName = document.getElementById('userName').value;
+    const userEmail = document.getElementById('userEmail').value;
+
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const orderData = {
+      user: {
+        name: userName,
+        email: userEmail,
+      },
+      items: cartItems 
+    };
+
+    $.ajax({
+      url: 'http://localhost:5501/backend/order', 
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(orderData),
+      success: function (response) {
+        console.log('Order successfully made', response);
+        alert('Order successfully placed!');
+
+        document.getElementById('userName').value = '';
+        document.getElementById('userEmail').value = '';
+
+        localStorage.setItem('cart', JSON.stringify([]));
+      },
+      error: function (xhr, status, error) {
+        console.error('Order creation failed', xhr.responseText);
+        alert('Failed to place the order. Please try again.');
+      }
+    });
+  }
+</script>
+
+<!--NEWSLETTER SECTION-->
+<section id="newsletter" class="section-p1 section-m1">
+  <div class="newtext">
+    <h4>Sign Up For Newsletters</h4>
+    <p>Get E-mail updates about our latest shop and <span>special offers</span>.</p>
+  </div>
+
+  <div class="form">
+    <input type="text" placeholder="Your email address" id="emailInput">
+    <button class="normal" onclick="subscribeNewsletter()">Sign Up</button>
+    <span id="emailMessage" class="email-error-message"></span>
+  </div>
+</section>
+
+<!--PORUKA ZA EMAIL-->
+<script>
+  function subscribeNewsletter() {
+    var email = document.getElementById('emailInput').value;
+    var messageElement = document.getElementById('emailMessage');
+
+    if(email && email.includes('@')) {
+      $.ajax({
+        url: 'backend/subscribe',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ email: email }),
+        success: function(response) {
+          messageElement.textContent = response.message;
+          messageElement.style.color = 'green';
+        },
+        error: function(xhr, status, error) {
+          messageElement.textContent = 'Subscription failed: ' + error;
+          messageElement.style.color = 'red';
+        }
+      });
+    } else {
+      messageElement.textContent = 'Please enter a valid email!';
+      messageElement.style.color = 'red';
+    }
+  }
+</script>
+
+
+</html>

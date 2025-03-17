@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+  <!--IMAGES - SECTION-->
+
+  <section id="prodetails" class="section-p1">
+    <div class="single-pro-image">
+      <img src="" width="100%" id="MainImg" alt="">
+      <div class="small-img-group">
+      </div>
+    </div>
+
+    <!--NASLOV AND DESCRIPTION AND BUTTONS-->
+
+    <div class="single-pro-details">
+      <h6><!--ovdje ide brand--></h6>
+      <h4> <!--MODEL PATIKA--> </h4>
+      <h3> <!--CIJENA--> </h3>
+
+      <div class="odvoji">
+        <button class="normal add-to-cart">Add to cart</button>
+      </div>
+      <h4><!--ovdje ide product desc naslov--></h4>
+      <span>
+        <!--OVO OVDJE JE MJESTO ZA Paragraf - description-->
+      </span>
+    </div>
+  </section>
+</body>
+
+<!--NEWSLETTER SECTION-->
+<section id="newsletter" class="section-p1 section-m1">
+  <div class="newtext">
+    <h4>Sign Up For Newsletters</h4>
+    <p>Get E-mail updates about our latest shop and <span>special offers</span>.</p>
+  </div>
+
+  <div class="form">
+    <input type="text" placeholder="Your email address" id="emailInput">
+    <button class="normal" onclick="subscribeNewsletter()">Sign Up</button>
+    <span id="emailMessage" class="email-error-message"></span>
+  </div>
+</section>
+
+<!--PORUKA ZA EMAIL-->
+<script>
+  function subscribeNewsletter() {
+    var email = document.getElementById('emailInput').value;
+    var messageElement = document.getElementById('emailMessage');
+
+    if(email && email.includes('@')) {
+      $.ajax({
+        url: 'http://localhost:5501/backend/subscribe', 
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ email: email }),
+        success: function(response) {
+          // Assume the response contains an object with a message property
+          messageElement.textContent = response.message;
+          messageElement.style.color = 'green';
+        },
+        error: function(xhr, status, error) {
+          // Handle errors here
+          messageElement.textContent = 'Subscription failed: ' + error;
+          messageElement.style.color = 'red';
+        }
+      });
+    } else {
+      messageElement.textContent = 'Please enter a valid email!';
+      messageElement.style.color = 'red';
+    }
+  }
+</script>
+
+
+</html>

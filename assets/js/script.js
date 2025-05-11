@@ -109,6 +109,19 @@ app.route({
           localStorage.setItem("productId", productId);
           window.location.href = '#sproduct';
         });
+        if ($('#searchInputHome').length) {
+          $('#searchInputHome').on('input', function () {
+            const query = $(this).val().toLowerCase();
+            $('#pro-container .pro').each(function () {
+              const productName = $(this).find('h5').text().toLowerCase();
+              if (productName.includes(query)) {
+                $(this).show();
+              } else {
+                $(this).hide();
+              }
+            });
+          });
+        }
       },
       error: function (error) {
         console.error('An error occurred while retrieving data', error);
@@ -149,6 +162,21 @@ app.route({
           localStorage.setItem("productId", productId);
           window.location.href = '#sproduct';
         });
+
+        if ($('#searchInput').length) {
+          $('#searchInput').on('input', function () {
+            const query = $(this).val().toLowerCase();
+            $('#pro-container .pro').each(function () {
+              const productName = $(this).find('h5').text().toLowerCase();
+              if (productName.includes(query)) {
+                $(this).show();
+              } else {
+                $(this).hide();
+              }
+            });
+          });
+        }
+
       },
       error: function (error) {
         console.error('An error occurred while retrieving data', error);

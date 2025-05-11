@@ -253,18 +253,39 @@ app.route({
     var totalPrice = 0;
     proContainer.empty();
 
-    products.forEach(function (product) {
-      var productHTML =
-        ` 
-            <tr>
-            <td><img src="${product.image}" alt="" ></td>
-            <td> ${product.name}</td>
-            <td>$ ${product.price}</td>
-            <td>$ ${product.price}</td>
-          </tr>
-          `
+    products.forEach(function (product, index) {
+      var productHTML = `
+      <tr data-index="${index}">
+        <td><img src="${product.image}" alt="" ></td>
+        <td>${product.name}</td>
+        <td>$ ${product.price}</td>
+        <td>$ ${product.price}</td>
+        <td><button class="remove-btn">Delete</button></td>
+      </tr>
+    `;
       proContainer.append(productHTML);
       totalPrice += Number(product.price);
+    });
+
+    $('#cart-container').on('click', '.remove-btn', function () {
+      const row = $(this).closest('tr');
+      const index = row.data('index');
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+      cart.splice(index, 1); // izbaci item iz niza
+      localStorage.setItem('cart', JSON.stringify(cart)); // ažuriraj localStorage
+    
+      row.remove(); // ukloni red iz DOM-a
+    
+      // Ažuriraj total
+      let totalPrice = 0;
+      $('#cart-container tr').each(function () {
+        const priceText = $(this).find('td:nth-child(3)').text().replace('$ ', '');
+        totalPrice += parseFloat(priceText);
+      });
+    
+      $('#subtotal table tr:nth-child(1) td:nth-child(2)').text(`$ ${totalPrice.toFixed(2)}`);
+      $('#subtotal table tr:nth-child(3) td:nth-child(2)').text(`$ ${totalPrice.toFixed(2)}`);
     });
 
     document.querySelector('#subtotal table tr:nth-child(3) td:nth-child(2)').textContent = `$ ${totalPrice.toFixed(2)}`;

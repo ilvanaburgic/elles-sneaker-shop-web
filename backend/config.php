@@ -10,7 +10,7 @@ error_reporting(E_ALL ^ (E_NOTICE | E_DEPRECATED));
 define('DB_NAME', 'EllesSneakerShop');
 define('DB_PORT', 3306);
 define('DB_USER', 'root');
-define('DB_PASS', '12nana123');
+define('DB_PASS', 'root');
 define('DB_HOST', '127.0.0.1');
 
 // JWT Secret

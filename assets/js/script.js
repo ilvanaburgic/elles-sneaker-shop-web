@@ -30,10 +30,10 @@ app.route({
   onReady: function () {
     var productId = localStorage.getItem("productId");
     $.ajax({
-      url: 'http://localhost:5501/backend/public/products',
+      url: '/backend/public/products',
       type: 'GET',
       dataType: 'json',
-      
+
       success: function (data) {
         const products = data.data;
         var product = products.find(p => p.id.toString() === productId);
@@ -48,20 +48,20 @@ app.route({
         }
 
         $('.add-to-cart').on('click', function () {
-          
+
           let cart = JSON.parse(localStorage.getItem('cart')) || [];
-          
+
           cart.push(product);
           localStorage.setItem('cart', JSON.stringify(cart));
 
           const button = $(this);
 
-          
+
           button.text('Added!');
           button.addClass('success');
           button.prop('disabled', true);
 
-          
+
           setTimeout(function () {
             button.text('Add to cart');
             button.removeClass('success');
@@ -82,7 +82,7 @@ app.route({
   load: "home.html",
   onReady: function () {
     $.ajax({
-      url: 'http://localhost:5501/backend/public/products', 
+      url: '/backend/public/products',
       type: 'GET',
       dataType: 'json',
       success: function (data) {
@@ -130,39 +130,94 @@ app.route({
   }
 });
 
+// shop.html
 app.route({
   view: "shop",
   load: "shop.html",
   onReady: function () {
     $.ajax({
-      url: 'http://localhost:5501/backend/public/products',
+      url: '/backend/public/products',
       type: 'GET',
       dataType: 'json',
       success: function (data) {
         const products = data.data;
-        var proContainer = $('#pro-container');
-        proContainer.empty();
+        const proContainer = $('#pro-container');
 
-        products.forEach(function (product) {
-          var productHTML =
-            '<div class="pro" data-id="' + product.id + '">' +
-            '<img src="' + product.image + '" alt="">' +
-            '<div class="description">' +
-            '<span>' + product.brand + '</span>' +
-            '<h5>' + product.name + '</h5><br>' +
-            '<h4>$' + product.price + '</h4>' +
-            '</div>' +
-            '</div>';
+        function renderProducts(filteredProducts) {
+          proContainer.empty();
 
-          proContainer.append(productHTML);
-        });
+          filteredProducts.forEach(function (product) {
+            const productHTML =
+              '<div class="pro" data-id="' + product.id + '">' +
+              '<img src="' + product.image + '" alt="">' +
+              '<div class="description">' +
+              '<span>' + product.brand + '</span>' +
+              '<h5>' + product.name + '</h5><br>' +
+              '<h4>$' + product.price + '</h4>' +
+              '</div>' +
+              '</div>';
 
-        $('.pro').click(function () {
-          var productId = $(this).data('id');
-          localStorage.setItem("productId", productId);
-          window.location.href = '#sproduct';
-        });
+            proContainer.append(productHTML);
+          });
 
+          $('.pro').click(function () {
+            const productId = $(this).data('id');
+            localStorage.setItem("productId", productId);
+            window.location.href = '#sproduct';
+          });
+        }
+
+        // Initial render
+        renderProducts(products);
+
+        // Filtering logic
+        function applyFilters() {
+          // Get selected brands (checkboxes)
+          const selectedBrands = $('.brand-filter:checked').map(function () {
+            return this.value.toLowerCase();
+          }).get();
+
+          // Get selected price range
+          const priceRange = $('#priceRange').val();
+          let [minPrice, maxPrice] = [0, Infinity];
+
+          if (priceRange !== 'all') {
+            const parsed = priceRange.split('-').map(Number);
+            if (parsed.length === 2) {
+              [minPrice, maxPrice] = parsed;
+            } else if (parsed.length === 1) {
+              [minPrice, maxPrice] = [parsed[0], Infinity];
+            }
+          }
+
+          // Get selected color
+          const selectedColor = $('#color').val().toLowerCase();
+
+          const filtered = products.filter(p => {
+            const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(p.brand?.toLowerCase());
+
+            // Price parsing with $ or $$ handling
+            let priceVal = p.price;
+            if (typeof priceVal === 'string') {
+              priceVal = parseFloat(priceVal.replace(/\$/g, ''));
+            }
+
+            const priceMatch = priceVal >= minPrice && priceVal <= maxPrice;
+
+            const colorMatch = !selectedColor || (p.color && p.color.toLowerCase() === selectedColor);
+
+            return brandMatch && priceMatch && colorMatch;
+          });
+
+          renderProducts(filtered);
+        }
+
+        // Event listeners
+        $('.brand-filter').on('change', applyFilters);
+        $('#priceRange').on('change', applyFilters);
+        $('#color').on('change', applyFilters);
+
+        // Search
         if ($('#searchInput').length) {
           $('#searchInput').on('input', function () {
             const query = $(this).val().toLowerCase();
@@ -176,7 +231,6 @@ app.route({
             });
           });
         }
-
       },
       error: function (error) {
         console.error('An error occurred while retrieving data', error);
@@ -195,10 +249,10 @@ app.route({
       return;
     }
     $.ajax({
-      url: 'http://localhost:5501/backend/products',
+      url: '/backend/public/products',
       type: 'GET',
       dataType: 'json',
-      headers:{
+      headers: {
         "Authorization": JSON.parse(localStorage.getItem("user")).token
       },
       success: function (data) {
@@ -243,9 +297,9 @@ app.route({
     }
     var productId = localStorage.getItem("productId");
     $.ajax({
-      url: 'http://localhost:5501/backend/products',
+      url: '/backend/products',
       type: 'GET',
-      headers:{
+      headers: {
         "Authorization": JSON.parse(localStorage.getItem("user")).token
       },
       dataType: 'json',
@@ -268,8 +322,6 @@ app.route({
     });
   }
 });
-
-
 
 app.route({
   view: "cart",
@@ -299,19 +351,19 @@ app.route({
       const row = $(this).closest('tr');
       const index = row.data('index');
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
+
       cart.splice(index, 1); // izbaci item iz niza
       localStorage.setItem('cart', JSON.stringify(cart)); // ažuriraj localStorage
-    
+
       row.remove(); // ukloni red iz DOM-a
-    
+
       // Ažuriraj total
       let totalPrice = 0;
       $('#cart-container tr').each(function () {
         const priceText = $(this).find('td:nth-child(3)').text().replace('$ ', '');
         totalPrice += parseFloat(priceText);
       });
-    
+
       $('#subtotal table tr:nth-child(1) td:nth-child(2)').text(`$ ${totalPrice.toFixed(2)}`);
       $('#subtotal table tr:nth-child(3) td:nth-child(2)').text(`$ ${totalPrice.toFixed(2)}`);
     });
@@ -326,7 +378,7 @@ app.route({
       var subtotal = quantity * price;
       input.closest('tr').find('td:nth-child(5)').text(`$ ${subtotal.toFixed(2)}`);
 
-      
+
       var total = 0;
       $('#cart-container tr').each(function () {
         var row = $(this);

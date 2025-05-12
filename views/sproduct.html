@@ -49,18 +49,18 @@
     var email = document.getElementById('emailInput').value;
     var messageElement = document.getElementById('emailMessage');
 
-    if(email && email.includes('@')) {
+    if (email && email.includes('@')) {
       $.ajax({
-        url: 'http://localhost:5501/backend/subscribe', 
+        url: '/backend/subscribe',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email: email }),
-        success: function(response) {
+        success: function (response) {
           // Assume the response contains an object with a message property
           messageElement.textContent = response.message;
           messageElement.style.color = 'green';
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
           // Handle errors here
           messageElement.textContent = 'Subscription failed: ' + error;
           messageElement.style.color = 'red';

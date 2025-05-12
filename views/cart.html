@@ -61,12 +61,12 @@
       cursor: pointer;
       border-radius: 4px;
     }
-  
+
     td button.remove-btn {
       display: inline-block;
     }
   </style>
-  
+
 </body>
 
 
@@ -82,11 +82,11 @@
         name: userName,
         email: userEmail,
       },
-      items: cartItems 
+      items: cartItems
     };
 
     $.ajax({
-      url: 'http://localhost:5501/backend/order', 
+      url: '/backend/order',
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(orderData),
@@ -127,17 +127,17 @@
     var email = document.getElementById('emailInput').value;
     var messageElement = document.getElementById('emailMessage');
 
-    if(email && email.includes('@')) {
+    if (email && email.includes('@')) {
       $.ajax({
         url: 'backend/subscribe',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email: email }),
-        success: function(response) {
+        success: function (response) {
           messageElement.textContent = response.message;
           messageElement.style.color = 'green';
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
           messageElement.textContent = 'Subscription failed: ' + error;
           messageElement.style.color = 'red';
         }

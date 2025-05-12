@@ -45,7 +45,7 @@
       var password = $('#password').val();
 
       $.ajax({
-        url: 'http://localhost:5501/backend/login/', 
+        url: '/backend/login/',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email: email, password: password }),
@@ -54,7 +54,7 @@
           console.log('Login successful', response);
           window.location.hash = '#administrator';
           $("#logout-button")
-          .show();
+            .show();
         },
         error: function (xhr, status, error) {
           console.error('Login failed', xhr.responseText);
@@ -66,4 +66,3 @@
 </body>
 
 </html>
-

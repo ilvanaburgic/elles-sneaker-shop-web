@@ -44,21 +44,21 @@
     function cleanInput(input) {
       return input.replace(/[\x00-\x1F\x7F-\x9F]/g, ""); // Uklanja kontrolne znakove
     }
-    
-    $(document).ready(function() {
+
+    $(document).ready(function () {
       var addModal = $('#addModal');
       var addButton = $('.normal-add-button');
       var addCloseButton = $('.close');
 
-      addButton.on('click', function() {
+      addButton.on('click', function () {
         addModal.show();
       });
 
-      addCloseButton.on('click', function() {
+      addCloseButton.on('click', function () {
         addModal.hide();
       });
 
-      $('#addForm').submit(function(event) {
+      $('#addForm').submit(function (event) {
         event.preventDefault();
 
         var productData = {
@@ -78,23 +78,23 @@
         }
 
         $.ajax({
-          url: 'http://localhost:5501/backend/products',
+          url: '/backend/products',
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(productData),
           beforeSend: function (xhr) {
-          if (Utils.get_from_localstorage("user")) {
-            xhr.setRequestHeader(
-              "Authorization",
-              Utils.get_from_localstorage("user").token
-            );
-          }
-        },
-          success: function(response) {
+            if (Utils.get_from_localstorage("user")) {
+              xhr.setRequestHeader(
+                "Authorization",
+                Utils.get_from_localstorage("user").token
+              );
+            }
+          },
+          success: function (response) {
             alert('Product added successfully!');
             addModal.hide();
           },
-          error: function(xhr) {
+          error: function (xhr) {
             alert('Error adding product: ' + xhr.responseText);
           }
         });

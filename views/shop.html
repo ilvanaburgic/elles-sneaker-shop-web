@@ -12,11 +12,58 @@
 
 
   <!--SNEAKERS SECTION-->
-
   <!-- SEARCH SECTION -->
-<section class="section-p1">
-  <input type="text" id="searchInput" placeholder="Search sneakers..." class="form-control" style="width: 100%; padding: 10px; font-size: 16px;">
-</section>
+  <section class="section-p1">
+    <input type="text" id="searchInput" placeholder="Search sneakers..." class="form-control"
+      style="width: 100%; padding: 10px; font-size: 16px;">
+  </section>
+
+  <!-- FILTER SECTION -->
+  <section class="section-p1">
+    <div id="filter-section" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+
+      <!-- Brand Filter -->
+      <div>
+        <strong>Brand:&nbsp;&nbsp;&nbsp;
+        </strong><br><br><br>
+        <label><input type="checkbox" class="brand-filter" value="Nike"> Nike</label>
+        <label><input type="checkbox" class="brand-filter" value="Adidas"> Adidas</label>
+        <label><input type="checkbox" class="brand-filter" value="Puma"> Puma</label>
+        <!-- Add more brands if needed -->
+      </div>
+
+      <!-- Price Filter -->
+      <div>
+        <label for="priceRange"><strong>Price Range:&nbsp;&nbsp;&nbsp;</strong></label><br><br><br>
+        <select id="priceRange">
+          <option value="all">All</option>
+          <option value="0-50">$0 - $50</option>
+          <option value="51-100">$51 - $100</option>
+          <option value="101-200">$101 - $200</option>
+          <option value="201-300">$201 - $300</option>
+          <option value="301-10000">$301+</option>
+        </select>
+      </div>
+
+      <!-- Color Filter -->
+      <div>
+        <label for="color"><strong>Color:</strong></label><br><br><br>
+        <select id="color">
+          <option value="">All</option>
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="red">Red</option>
+          <option value="orange">Orange</option>
+          <option value="yellow">Yellow</option>
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="purple">Purple</option>
+        </select>
+      </div>
+
+    </div>
+  </section>
+
 
   <section id="product1" class="section-p1">
     <!-- kontejner u koji ce se dinamicki ubacivati proizvodi -->
@@ -24,6 +71,7 @@
       <!-- proizvodi ce se dinamicki ucitat ovdje pomocu Ajaxa -->
     </div>
   </section>
+
 </body>
 
 <!--NEWSLETTER SECTION-->
@@ -46,18 +94,18 @@
     var email = document.getElementById('emailInput').value;
     var messageElement = document.getElementById('emailMessage');
 
-    if(email && email.includes('@')) {
+    if (email && email.includes('@')) {
       $.ajax({
-        url: 'http://localhost:5501/backend/subscribe', // Adjust the URL to where your subscribe endpoint is located
+        url: '/backend/subscribe', // Adjust the URL to where your subscribe endpoint is located
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email: email }),
-        success: function(response) {
+        success: function (response) {
           // Assume the response contains an object with a message property
           messageElement.textContent = response.message;
           messageElement.style.color = 'green';
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
           // Handle errors here
           messageElement.textContent = 'Subscription failed: ' + error;
           messageElement.style.color = 'red';

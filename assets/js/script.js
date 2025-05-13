@@ -193,6 +193,9 @@ app.route({
           // Get selected color
           const selectedColor = $('#color').val().toLowerCase();
 
+          // Get selected gender
+          const selectedGender = $('#gender').val().toLowerCase();
+
           const filtered = products.filter(p => {
             const brandMatch = selectedBrands.length === 0 || selectedBrands.includes(p.brand?.toLowerCase());
 
@@ -206,7 +209,9 @@ app.route({
 
             const colorMatch = !selectedColor || (p.color && p.color.toLowerCase() === selectedColor);
 
-            return brandMatch && priceMatch && colorMatch;
+            const genderMatch = !selectedGender || (p.gender && p.gender.toLowerCase() === selectedGender);
+
+            return brandMatch && priceMatch && colorMatch && genderMatch;
           });
 
           renderProducts(filtered);
@@ -216,6 +221,7 @@ app.route({
         $('.brand-filter').on('change', applyFilters);
         $('#priceRange').on('change', applyFilters);
         $('#color').on('change', applyFilters);
+        $('#gender').on('change', applyFilters);
 
         // Search
         if ($('#searchInput').length) {

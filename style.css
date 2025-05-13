@@ -160,7 +160,7 @@ body {
   background-color: #ede1e6;
 }
 
-#page-administrator-header{
+#page-administrator-header {
   margin-top: 100px;
   margin-left: 320px;
 
@@ -170,42 +170,51 @@ body {
 
 .CRUD-buttons {
   display: flex;
-  justify-content: space-between; /* Ovo će osigurati razmak između dugmadi */
+  justify-content: space-between;
+  /* Ovo će osigurati razmak između dugmadi */
   margin-top: 80px;
   margin-bottom: -50px;
-  margin-left: 900px; /* Ovo možete prilagoditi prema potrebi */
+  margin-left: 900px;
+  /* Ovo možete prilagoditi prema potrebi */
   margin-right: 100px;
 
-  
+
 }
 
-.normal-edit-button, .normal-delete-button {
-  flex: 1; /* Ovo osigurava da svako dugme zauzima jednake dijelove prostora */
+.normal-edit-button,
+.normal-delete-button {
+  flex: 1;
+  /* Ovo osigurava da svako dugme zauzima jednake dijelove prostora */
   color: white;
   border-radius: 10px;
   padding: 10px 20px;
-  margin-left: 10px; /* Dodaje razmak od 10px na lijevoj strani delete dugmeta */
-  transition: background-color 0.3s; /* Dodaje glatku tranziciju za promjene boje pozadine */
+  margin-left: 10px;
+  /* Dodaje razmak od 10px na lijevoj strani delete dugmeta */
+  transition: background-color 0.3s;
+  /* Dodaje glatku tranziciju za promjene boje pozadine */
   border-style: none;
 
 
 }
 
 .normal-edit-button {
-  background-color: #00458f; /* Svijetlo plava */
+  background-color: #00458f;
+  /* Svijetlo plava */
 }
 
 /* Ako želite da razmak bude između dugmadi koristeći margin-left na delete dugme */
 .normal-delete-button {
-    background-color: red;
+  background-color: red;
 }
 
 .normal-edit-button:hover {
-  background-color: #7abaff; /* Promjena boje teksta dugmadi na hover */
+  background-color: #7abaff;
+  /* Promjena boje teksta dugmadi na hover */
 }
 
 .normal-delete-button:hover {
-  background-color: rgb(255, 130, 130); /* Promjena boje teksta dugmadi na hover */
+  background-color: rgb(255, 130, 130);
+  /* Promjena boje teksta dugmadi na hover */
 }
 
 
@@ -799,10 +808,12 @@ button.odvoji {
 
 .normal-add-button {
   position: absolute;
-  top: 250px; /* Spušta gumb dolje za 100px (originalni top: 20px + 100px) */
+  top: 250px;
+  /* Spušta gumb dolje za 100px (originalni top: 20px + 100px) */
   margin-left: 570px;
   color: white;
-  left: calc(50% - 150px); /* Pomjera gumb lijevo za 150px (originalni left: 50%) */
+  left: calc(50% - 150px);
+  /* Pomjera gumb lijevo za 150px (originalni left: 50%) */
   padding: 20px 50px;
   background-color: #45a049;
   border: none;
@@ -812,14 +823,16 @@ button.odvoji {
 
 
 
-#navbar li, #logout-button {
+#navbar li,
+#logout-button {
   margin-right: 20px;
   font-family: Arial, sans-serif;
   font-size: 16px;
   padding: 10px;
   border: none;
   background-color: #f3e3ea;
-  color: black; /* Adjust text color as per your theme */
+  color: black;
+  /* Adjust text color as per your theme */
   text-align: center;
   text-decoration: none;
   line-height: 20px;
@@ -835,7 +848,8 @@ button.odvoji {
   cursor: pointer;
 }
 
-#navbar li a, #logout-button {
+#navbar li a,
+#logout-button {
   display: block;
 }
 
@@ -843,7 +857,8 @@ button.odvoji {
 
 /* Osnovni stilovi */
 body {
-  font-family: Arial, sans-serif; /* Promijeniti font po želji */
+  font-family: Arial, sans-serif;
+  /* Promijeniti font po želji */
   margin: 0;
   padding: 0;
 
@@ -853,23 +868,31 @@ body {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000; /* Osigurava da je modal uvijek na vrhu */
+  z-index: 1000;
+  /* Osigurava da je modal uvijek na vrhu */
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; /* Omogućava skrolanje na malim ekranima */
-  background-color: rgba(0,0,0,0.4); /* Tamna pozadina sa transparencijom */
+  overflow: auto;
+  /* Omogućava skrolanje na malim ekranima */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Tamna pozadina sa transparencijom */
 }
 
 .modal-content {
   background-color: #ffffff;
-  margin: calc(15% + 80px) auto; /* Originalno 15% od vrha, dodajemo 80px */
+  margin: calc(15% + 80px) auto;
+  /* Originalno 15% od vrha, dodajemo 80px */
   padding: 20px;
-  border: 1px solid #ccc; /* Suptilna granica */
-  width: 50%; /* Širina modalnog prozora */
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Blaga sjena za 3D efekt */
-  border-radius: 10px; /* Zaobljeni uglovi */
+  border: 1px solid #ccc;
+  /* Suptilna granica */
+  width: 50%;
+  /* Širina modalnog prozora */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Blaga sjena za 3D efekt */
+  border-radius: 10px;
+  /* Zaobljeni uglovi */
 }
 
 
@@ -887,21 +910,25 @@ body {
 
 /* Stilovi za formu */
 form {
-  font-size: 16px; /* Veći font za bolju čitljivost */
+  font-size: 16px;
+  /* Veći font za bolju čitljivost */
 }
 
 input[type="text"],
 textarea {
-  width: 100%; /* Širina inputa prilagođena modalnom prozoru */
+  width: 100%;
+  /* Širina inputa prilagođena modalnom prozoru */
   padding: 8px;
   margin-top: 8px;
-  margin-bottom: 16px; /* Veći razmak između elemenata forme */
+  margin-bottom: 16px;
+  /* Veći razmak između elemenata forme */
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
 input[type="submit"] {
-  background-color: #4CAF50; /* Zelena boja za dugme 'Save' */
+  background-color: #4CAF50;
+  /* Zelena boja za dugme 'Save' */
   color: white;
   padding: 12px 20px;
   border: none;
@@ -910,12 +937,14 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-  background-color: #45a049; /* Malo tamnija zelena kada je miš iznad */
+  background-color: #45a049;
+  /* Malo tamnija zelena kada je miš iznad */
 }
 
 /* Stilovi za dugmad 'Edit' i 'Delete' */
 .CRUD-buttons button {
-  background-color: #007bff; /* Plava boja za 'Edit' */
+  background-color: #007bff;
+  /* Plava boja za 'Edit' */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -925,11 +954,13 @@ input[type="submit"]:hover {
 }
 
 .CRUD-buttons button:nth-child(2) {
-  background-color: #dc3545; /* Crvena boja za 'Delete' */
+  background-color: #dc3545;
+  /* Crvena boja za 'Delete' */
 }
 
 .CRUD-buttons button:hover {
-  opacity: 0.8; /* Efekt kada je miš iznad dugmadi */
+  opacity: 0.8;
+  /* Efekt kada je miš iznad dugmadi */
 }
 
 
@@ -945,13 +976,13 @@ input[type="submit"]:hover {
   }
 
   .registrate-button {
-    background-color: #000;
-    color: white;
-    align-items: center;
-    padding: 10px;
-    margin-top: -100px;
-    margin-bottom: 200px;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+    padding: 13px;
+    margin-left: 150px;
+    margin-right: 150px;
     border-radius: 5px;
+    text-align: center;
   }
 
   .select-size {
@@ -1629,6 +1660,74 @@ input[type="submit"]:hover {
     width: 100%;
     overflow-x: hidden;
   }
+
+  /* ==== Sign Up Page Styles ==== */
+
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+
+  #signup-section {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+
+  .signup-settings,
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 20px);
+    margin-bottom: 25px;
+    margin-left: 10px;
+  }
+
+  .form-field input,
+  .form-field select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  .form-button {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .form-button button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .form-button button:hover {
+    background-color: #555;
+  }
+
+  #signup-section a {
+    color: #c40406;
+    text-decoration: none;
+  }
+
+  #signup-section a:hover {
+    text-decoration: underline;
+  }
+
+  #signupMessage {
+    margin-top: 10px;
+  }
+
 
   /*LOGIN PAGE*/
 

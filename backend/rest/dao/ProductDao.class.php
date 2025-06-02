@@ -45,11 +45,20 @@ class ProductDao extends BaseDao
   }
 
 
-  public function update_product($id, $name, $price, $description)
-  {
-    $sql = "UPDATE products SET name = :name, price = :price, description = :description WHERE id = :id";
-    $stmt = $this->connection->prepare($sql);
-    $stmt->execute(['name' => $name, 'price' => $price, 'description' => $description, 'id' => $id]);
-    return $stmt->rowCount();
+public function update_product($id, $name, $price, $description, $is_active = null) {
+  $sql = "UPDATE products SET name = :name, price = :price, description = :description";
+  $params = ['name' => $name, 'price' => $price, 'description' => $description, 'id' => $id];
+
+  if ($is_active !== null) {
+    $sql .= ", is_active = :is_active";
+    $params['is_active'] = $is_active;
   }
+
+  $sql .= " WHERE id = :id";
+  
+  $stmt = $this->connection->prepare($sql);
+  $stmt->execute($params);
+  return $stmt->rowCount();
+}
+
 }

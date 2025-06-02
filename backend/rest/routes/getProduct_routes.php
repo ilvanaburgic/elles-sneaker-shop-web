@@ -149,7 +149,7 @@ Flight::route('PATCH /products/@id', function ($id) {
   $data = json_decode(Flight::request()->getBody());
   if ($data) {
     $product_service = Flight::get('product_service');
-    $result = $product_service->update_product($id, $data->name, $data->price, $data->description);
+    $result = $product_service->update_product($id, $data->name, $data->price, $data->description, isset($data->is_active) ? $data->is_active : null);
     if ($result) {
       Flight::json(['message' => 'Proizvod je uspješno ažuriran'], 200);
     } else {
@@ -232,3 +232,35 @@ Flight::route('POST /products', function() {
     Flight::json(['message' => 'Invalid input'], 400);
   }
 })->addMiddleware('AuthMiddleware');
+
+
+/**
+ * @OA\Get(
+ *      path="/products/{product_id}",
+ *      tags={"products"},
+ *      summary="Get product by id",
+ *      security={{"ApiKey": {}}},
+ *      @OA\Response(
+ *           response=200,
+ *           description="Product details"
+ *      ),
+ *      @OA\Parameter(
+ *           name="product_id",
+ *           in="path",
+ *           required=true,
+ *           @OA\Schema(type="integer"),
+ *           description="ID of the product"
+ *      )
+ * )
+ */
+Flight::route('GET /products/@id', function ($id) {
+    $product_service = Flight::get('product_service');
+    $product = $product_service->get_product_by_id($id);
+    
+    if ($product) {
+        Flight::json(['data' => $product]);
+    } else {
+        Flight::halt(404, 'Product not found');
+    }
+})->addMiddleware('AuthMiddleware');
+

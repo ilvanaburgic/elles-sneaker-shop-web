@@ -32,7 +32,7 @@ class ProductService {
             return $this->product_dao->delete_product_by_id($product_id);
       }
 
-      public function update_product($id, $name, $price, $description) {
-            return $this->product_dao->update_product($id, $name, $price, $description);
+      public function update_product($id, $name, $price, $description, $is_active = null) {
+            return $this->product_dao->update_product($id, $name, $price, $description, $is_active);
         }
 }

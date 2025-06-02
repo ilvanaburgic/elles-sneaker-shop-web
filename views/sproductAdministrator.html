@@ -8,6 +8,7 @@
     <div class="CRUD-buttons">
       <button class="normal-edit-button">Edit</button>
       <button class="normal-delete-button">Delete</button>
+      <button class="normal-status-button">Enable/Disable</button> <!-- NOVO -->
     </div>
   </section>
 
@@ -29,6 +30,7 @@
       <span>
         <!--OVO OVDJE JE MJESTO ZA Paragraf - description-->
       </span>
+        <p id="productStatus"></p> <!-- STATUS PRIKAZ -->
     </div>
   </section>
 
@@ -52,9 +54,56 @@
 
 
 </body>
-
 <script src="../utils/utils.js"></script>
 <script>
+  function loadProductDetails() {
+    var productId = localStorage.getItem("productId");
+    $.ajax({
+      url: `/backend/products/${productId}`,
+      type: 'GET',
+      headers: {
+        "Authorization": JSON.parse(localStorage.getItem("user")).token
+      },
+      dataType: 'json',
+      success: function (data) {
+        var product = data.data;
+        if (product) {
+          // Prikaz svih slika (jedna ispod druge)
+          const singleProImage = document.querySelector('.single-pro-image');
+          singleProImage.innerHTML = ''; // očisti
+
+          product.image.split(',').forEach(img => {
+            const imgElement = document.createElement('img');
+            imgElement.src = img.trim();
+            imgElement.style.width = '100%'; // prilagodi po želji
+            imgElement.style.marginBottom = '10px'; // razmak između slika
+            singleProImage.appendChild(imgElement);
+          });
+
+          // Prikaz detalja
+          document.querySelector('.single-pro-details h6').textContent = product.brand;
+          document.querySelector('.single-pro-details h4').textContent = product.name;
+          document.querySelector('.single-pro-details h3').textContent = `$${product.price}`;
+          document.querySelector('.single-pro-details span').textContent = product.description;
+          document.getElementById('productStatus').textContent = product.is_active == 1 ? 'Status: Active' : 'Status: Inactive';
+        } else {
+          console.error('Product not found');
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error('Error fetching product:', error);
+      }
+    });
+  }
+
+  $(document).ready(function () {
+    loadProductDetails();
+  });
+
+  $(window).on('hashchange', function () {
+    loadProductDetails();
+  });
+
   // Upravljanje modalom za uređivanje
   var editModal = document.getElementById('editModal');
   var editButton = document.querySelector('.normal-edit-button');
@@ -66,36 +115,6 @@
     document.getElementById('productPrice').value = document.querySelector('.single-pro-details h3').textContent;
     document.getElementById('productDescription').textContent = document.querySelector('.single-pro-details span').textContent;
   });
-
-  closeButton.addEventListener('click', function () {
-    editModal.style.display = "none";
-  });
-
-  // document.getElementById('editForm').addEventListener('submit', function(event) {
-  //     event.preventDefault();
-  //     var productName = document.getElementById('productName').value;
-  //     var productPrice = document.getElementById('productPrice').value;
-  //     var productDescription = document.getElementById('productDescription').value;
-
-  //     $.ajax({
-  //       url: `/backend/products/${}`,  // Ovo treba biti tačan putanja do vaše PHP rute
-  //         type: 'POST',
-  //         data: {
-  //             name: productName,
-  //             price: productPrice,
-  //             description: productDescription
-  //         },
-  //         success: function(response) {
-  //             alert('Product updated successfully!');
-  //             editModal.style.display = "none";
-  //             // Možda ovdje osvježi podatke na stranici
-  //         },
-  //         error: function() {
-  //             alert('Error updating product.');
-  //         }
-  //     });
-  // });
-
 
   closeButton.addEventListener('click', function () {
     editModal.style.display = "none";
@@ -126,10 +145,59 @@
     }
   });
 
+  var statusButton = document.querySelector('.normal-status-button');
+statusButton.addEventListener('click', function () {
+  var productId = localStorage.getItem("productId");
+  
+  $.ajax({
+    url: '/backend/products/' + productId,
+    type: 'GET',
+    headers: {
+      "Authorization": JSON.parse(localStorage.getItem("user")).token
+    },
+    success: function (response) {
+      var product = response.data;
+      if (!product) {
+        alert('Product not found!');
+        return;
+      }
 
-  // Existing scripts
+      var currentStatus = product.is_active === 1 ? 0 : 1;
 
-  // Add the new script for the edit form submission
+      $.ajax({
+        url: `/backend/products/${productId}`,
+        type: 'PATCH',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: product.name,
+          price: product.price,
+          description: product.description,
+          is_active: currentStatus
+        }),
+        beforeSend: function (xhr) {
+          if (Utils.get_from_localstorage("user")) {
+            xhr.setRequestHeader(
+              "Authorization",
+              Utils.get_from_localstorage("user").token
+            );
+          }
+        },
+        success: function (response) {
+          alert(`Product ${currentStatus === 1 ? 'enabled' : 'disabled'} successfully!`);
+          loadProductDetails(); // Refresh details
+        },
+        error: function (xhr, status, error) {
+          alert('Error updating product status: ' + error);
+        }
+      });
+    },
+    error: function (xhr, status, error) {
+      alert('Error fetching product details: ' + error);
+    }
+  });
+});
+
+
   document.getElementById('editForm').addEventListener('submit', function (event) {
     event.preventDefault();
     var productId = localStorage.getItem("productId");
@@ -166,8 +234,6 @@
         alert('Error updating product: ' + error);
       }
     });
-
-
   });
 </script>
 

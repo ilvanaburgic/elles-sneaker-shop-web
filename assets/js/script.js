@@ -86,20 +86,24 @@ app.route({
       type: 'GET',
       dataType: 'json',
       success: function (data) {
-        const products = data.data;
+        const products = data.data.filter(product => product.is_active === 1);
         var proContainer = $('#pro-container');
         proContainer.empty();
 
         products.forEach(function (product) {
           var productHTML =
             '<div class="pro" data-id="' + product.id + '">' +
-            '<img src="' + product.image + '" alt="">' +
+            '<img src="' + product.image.split(',')[0].trim() + '" alt="">' +
             '<div class="description">' +
             '<span>' + product.brand + '</span>' +
             '<h5>' + product.name + '</h5><br>' +
             '<h4>$' + product.price + '</h4>' +
+            (product.tags ? '<div class="tags">' +
+              product.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('') +
+              '</div>' : '') +
             '</div>' +
             '</div>';
+
 
           proContainer.append(productHTML);
         });
@@ -140,7 +144,7 @@ app.route({
       type: 'GET',
       dataType: 'json',
       success: function (data) {
-        const products = data.data;
+        const products = data.data.filter(product => product.is_active === 1);
         const proContainer = $('#pro-container');
 
         function renderProducts(filteredProducts) {
@@ -149,13 +153,17 @@ app.route({
           filteredProducts.forEach(function (product) {
             const productHTML =
               '<div class="pro" data-id="' + product.id + '">' +
-              '<img src="' + product.image + '" alt="">' +
+              '<img src="' + product.image.split(',')[0].trim() + '" alt="">' +
               '<div class="description">' +
               '<span>' + product.brand + '</span>' +
               '<h5>' + product.name + '</h5><br>' +
               '<h4>$' + product.price + '</h4>' +
+              (product.tags ? '<div class="tags">' +
+                product.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('') +
+                '</div>' : '') +
               '</div>' +
               '</div>';
+
 
             proContainer.append(productHTML);
           });
@@ -248,40 +256,15 @@ app.route({
       window.location.href = '#login';
       return;
     }
-    $.ajax({
-      url: '/backend/public/products',
-      type: 'GET',
-      dataType: 'json',
-      headers: {
-        "Authorization": JSON.parse(localStorage.getItem("user")).token
-      },
-      success: function (data) {
-        const products = data.data;
-        var proContainer = $('#pro-container');
-        proContainer.empty();
-
-        products.forEach(function (product) {
-          var productHTML =
-            '<div class="pro" data-id="' + product.id + '">' +
-            '<img src="' + product.image + '" alt="">' +
-            '<div class="description">' +
-            '<span>' + product.brand + '</span>' +
-            '<h5>' + product.name + '</h5><br>' +
-            '<h4>$' + product.price + '</h4>' +
-            '</div>' +
-            '</div>';
-
-          proContainer.append(productHTML);
-        });
-
-        $('.pro').click(function () {
-          var productId = $(this).data('id');
-          localStorage.setItem("productId", productId);
-          window.location.href = '#sproductAdministrator';
-        });
-      },
-      error: function (error) {
-        console.error('An error occurred while retrieving data', error);
+    app.route({
+      view: "administrator",
+      load: "administrator.html",
+      onReady: function () {
+        if (!Utils.get_from_localstorage("user")) {
+          window.location.href = '#login';
+          return;
+        }
+        loadProducts();
       }
     });
   }

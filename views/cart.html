@@ -129,15 +129,17 @@
 
     if (email && email.includes('@')) {
       $.ajax({
-        url: 'backend/subscribe',
+        url: '/backend/subscribe', // Adjust the URL to where your subscribe endpoint is located
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email: email }),
         success: function (response) {
+          // Assume the response contains an object with a message property
           messageElement.textContent = response.message;
           messageElement.style.color = 'green';
         },
         error: function (xhr, status, error) {
+          // Handle errors here
           messageElement.textContent = 'Subscription failed: ' + error;
           messageElement.style.color = 'red';
         }

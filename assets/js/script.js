@@ -26,48 +26,53 @@ var app = $.spapp({
 app.route({
   view: "sproduct",
   load: "sproduct.html",
-  onCreate: function () { },
   onReady: function () {
     var productId = localStorage.getItem("productId");
+
     $.ajax({
       url: '/backend/public/products',
       type: 'GET',
       dataType: 'json',
-
       success: function (data) {
         const products = data.data;
         var product = products.find(p => p.id.toString() === productId);
+
         if (product) {
-          document.getElementById("MainImg").src = product.image;
+          const singleProImage = document.querySelector('.single-pro-image');
+          singleProImage.innerHTML = '';
+
+          product.image.split(',').forEach(img => {
+            const imgElement = document.createElement('img');
+            imgElement.src = img.trim();
+            imgElement.style.width = '100%';
+            imgElement.style.marginBottom = '10px';
+            singleProImage.appendChild(imgElement);
+          });
+
+          document.querySelector('.single-pro-details h6').textContent = product.brand;
           document.querySelector('.single-pro-details h4').textContent = product.name;
           document.querySelector('.single-pro-details h3').textContent = `$${product.price}`;
           document.querySelector('.single-pro-details span').textContent = product.description;
 
+          $('.add-to-cart').off('click').on('click', function () {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            const button = $(this);
+            button.text('Added!');
+            button.addClass('success');
+            button.prop('disabled', true);
+
+            setTimeout(function () {
+              button.text('Add to cart');
+              button.removeClass('success');
+              button.prop('disabled', false);
+            }, 2000);
+          });
         } else {
           console.error('The product is not found');
         }
-
-        $('.add-to-cart').on('click', function () {
-
-          let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-          cart.push(product);
-          localStorage.setItem('cart', JSON.stringify(cart));
-
-          const button = $(this);
-
-
-          button.text('Added!');
-          button.addClass('success');
-          button.prop('disabled', true);
-
-
-          setTimeout(function () {
-            button.text('Add to cart');
-            button.removeClass('success');
-            button.prop('disabled', false);
-          }, 2000);
-        });
       },
       error: function (error) {
         console.error('An error occurred while retrieving data', error);
@@ -319,7 +324,7 @@ app.route({
     products.forEach(function (product, index) {
       var productHTML = `
       <tr data-index="${index}">
-        <td><img src="${product.image}" alt="" ></td>
+        <td><img src="${product.image.split(',')[0].trim()}" alt="" ></td>
         <td>${product.name}</td>
         <td>$ ${product.price}</td>
         <td>$ ${product.price}</td>

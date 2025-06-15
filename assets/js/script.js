@@ -167,8 +167,29 @@ app.route({
           });
         }
 
+
+        function sortProducts(productsToSort) {
+          const sortBy = $('#sortBy').val();
+
+          return productsToSort.sort((a, b) => {
+            switch (sortBy) {
+              case 'price-asc':
+                return parseFloat(a.price) - parseFloat(b.price);
+              case 'price-desc':
+                return parseFloat(b.price) - parseFloat(a.price);
+              case 'name-asc':
+                return a.name.localeCompare(b.name);
+              case 'name-desc':
+                return b.name.localeCompare(a.name);
+              default:
+                return 0; // No sorting
+            }
+          });
+        }
+
         // Initial render
         renderProducts(products);
+
 
         // Filtering logic
         function applyFilters() {
@@ -192,8 +213,6 @@ app.route({
 
           // Get selected color
           const selectedColor = $('#color').val().toLowerCase();
-
-          // Get selected gender
           const selectedGender = $('#gender').val().toLowerCase();
 
           const filtered = products.filter(p => {
@@ -214,7 +233,8 @@ app.route({
             return brandMatch && priceMatch && colorMatch && genderMatch;
           });
 
-          renderProducts(filtered);
+          const sorted = sortProducts(filtered);
+          renderProducts(sorted);
         }
 
         // Event listeners
@@ -222,6 +242,7 @@ app.route({
         $('#priceRange').on('change', applyFilters);
         $('#color').on('change', applyFilters);
         $('#gender').on('change', applyFilters);
+        $('#sortBy').on('change', applyFilters);
 
         // Search
         if ($('#searchInput').length) {

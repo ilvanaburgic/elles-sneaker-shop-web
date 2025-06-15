@@ -14,15 +14,32 @@ class ProductDao extends BaseDao
   {
     return $this->insert('products', $product);
   }
-  public function get_products($offset, $limit, $search, $order_column, $order_direction)
+  public function get_products($offset, $limit, $search, $order_column = 'name', $order_direction = 'ASC')
   {
-    $query = "SELECT * 
-              FROM products
-              WHERE LOWER(name) LIKE CONCAT('%', :search, '%') OR LOWER(description) LIKE CONCAT('%', :search, '%')
-              ORDER BY {$order_column} {$order_direction}
-              LIMIT {$offset}, {$limit}";
-    return $this->query($query, ['search' => strtolower($search)]);
+    // Whitelist valid columns and directions to prevent SQL injection
+    $allowed_columns = ['name', 'price'];
+    $allowed_directions = ['ASC', 'DESC'];
+
+    if (!in_array(strtolower($order_column), $allowed_columns)) {
+      $order_column = 'name';
+    }
+
+    if (!in_array(strtoupper($order_direction), $allowed_directions)) {
+      $order_direction = 'ASC';
+    }
+
+    $query = "SELECT * FROM products WHERE name LIKE :search ORDER BY $order_column $order_direction LIMIT :offset, :limit";
+
+    $stmt = $this->connection->prepare($query);
+    $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+    $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+
   public function count_products($search)
   {
     $query = "SELECT COUNT(*) AS count 

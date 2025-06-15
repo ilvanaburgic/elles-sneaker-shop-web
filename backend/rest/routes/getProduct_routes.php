@@ -12,14 +12,55 @@ Flight::set('product_service', new ProductService());
  * @OA\Get(
  *      path="/public/products",
  *      tags={"products"},
- *      summary="Get all products for user",
+ *      summary="Get filtered and sorted list of public products",
+ *      @OA\Parameter(
+ *          name="offset",
+ *          in="query",
+ *          @OA\Schema(type="integer"),
+ *          description="Pagination offset",
+ *          required=false,
+ *          example=0
+ *      ),
+ *      @OA\Parameter(
+ *          name="limit",
+ *          in="query",
+ *          @OA\Schema(type="integer"),
+ *          description="Pagination limit",
+ *          required=false,
+ *          example=10
+ *      ),
+ *      @OA\Parameter(
+ *          name="search",
+ *          in="query",
+ *          @OA\Schema(type="string"),
+ *          description="Search term for product name or description",
+ *          required=false,
+ *          example="protein"
+ *      ),
+ *      @OA\Parameter(
+ *          name="order_column",
+ *          in="query",
+ *          @OA\Schema(type="string", enum={"name", "price"}),
+ *          description="Column to order by (name or price)",
+ *          required=false,
+ *          example="price"
+ *      ),
+ *      @OA\Parameter(
+ *          name="order_direction",
+ *          in="query",
+ *          @OA\Schema(type="string", enum={"ASC", "DESC"}),
+ *          description="Sort direction (ASC or DESC)",
+ *          required=false,
+ *          example="ASC"
+ *      ),
  *      @OA\Response(
  *           response=200,
- *           description="Array of all products in the databases"
+ *           description="Array of filtered and sorted products with total count"
  *      )
  * )
  */
-Flight::route('GET /public/products', function () {
+
+/* Flight::route('GET /public/products', function () {
   $products = Flight::get('product_service')->get_all_products();
 
   header('Content-Type: application/json');
@@ -27,9 +68,23 @@ Flight::route('GET /public/products', function () {
   Flight::json([
     'data' => $products,
   ], 200);
+}); */
+
+Flight::route('GET /public/products', function () {
+  $offset = Flight::request()->query['offset'] ?? 0;
+  $limit = Flight::request()->query['limit'] ?? 100;
+  $search = Flight::request()->query['search'] ?? '';
+  $order_column = Flight::request()->query['order_column'] ?? 'name';
+  $order_direction = Flight::request()->query['order_direction'] ?? 'ASC';
+
+  $products = Flight::get('product_service')->get_products($offset, $limit, $search, $order_column, $order_direction);
+  $total = Flight::get('product_service')->count_products($search);
+
+  Flight::json([
+    'data' => $products,
+    'total' => $total['count']
+  ], 200);
 });
-
-
 
 
 /**
@@ -48,14 +103,14 @@ Flight::route('GET /public/products', function () {
  * )
  */
 
- Flight::route('DELETE /products/@id', function ($id) {
+Flight::route('DELETE /products/@id', function ($id) {
   $product_service = Flight::get('product_service');
   $result = $product_service->delete_product_by_id($id);
 
   if ($result) {
-      Flight::json(['message' => 'Product deleted successfully'], 200);
+    Flight::json(['message' => 'Product deleted successfully'], 200);
   } else {
-      Flight::json(['message' => 'Product not found'], 404);
+    Flight::json(['message' => 'Product not found'], 404);
   }
 })->addMiddleware('AuthMiddleware');
 
@@ -75,7 +130,7 @@ Flight::route('GET /public/products', function () {
  * )
  */
 
- Flight::route('GET /products', function () {
+Flight::route('GET /products', function () {
   $products = Flight::get('product_service')->get_all_products();
 
   header('Content-Type: application/json');
@@ -218,7 +273,7 @@ Flight::route('PATCH /products/@id', function ($id) {
  *      )
  * )
  */
-Flight::route('POST /products', function() {
+Flight::route('POST /products', function () {
   $data = json_decode(Flight::request()->getBody(), true);
   if ($data && isset($data['name'], $data['price'], $data['description'], $data['image'], $data['brand'])) {
     $product_service = Flight::get('product_service');

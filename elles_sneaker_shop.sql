@@ -42,6 +42,16 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
+CREATE TABLE `reviews` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `product_id` INT NOT NULL,
+  `rating` INT NOT NULL CHECK (`rating` BETWEEN 1 AND 5),
+  `review_text` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 INSERT INTO `products` (`id`, `name`, `description`, `brand`, `image`, `price`, `color`, `gender`) VALUES
 (13, 'NIKE Air Max 95', 'Their iconic design draws inspiration from Japanese bullet trains, while refreshed colors and sharp details keep their look modern and fresh. Full-length Nike Air cushioning lets you move in first-class comfort. Mesh and synthetic materials on the upper maintain a fluid look, adding comfort and durability. Originally designed to provide good running performance, the full-length Nike Air unit perfectly unites maximum comfort and sporty style. The foam midsole is elastic and light. The rubber sole provides excellent grip and durability to these sneakers.', 'Nike', 'https://www.buzzsneakers.ba/files/thumbs/files/images/slike-proizvoda/media/CK7/CK7070-001/images/thumbs_900/CK7070-001_900_900px.jpg', '269.99', 'Black', 'Males'),
 (14, 'NIKE Dunk', 'Nike Dunk Low children\'s lifestyle sneakers are an indispensable part of your style. This basketball icon from the mid-80s returns with an extremely durable construction and original colors. Genuine and synthetic leather uppers are durable and deliver a classic feel. The full-length rubber outsole provides durable traction and features a pattern similar to the original. With ankle padding and a grippy rubber sole, this is a nail-biter.', 'Nike', 'https://www.buzzsneakers.ba/files/thumbs/files/images/slike-proizvoda/media/FQ2/FQ2431-001/images/thumbs_900/FQ2431-001_900_900px.jpg', '184.99', 'Black', 'Males'),

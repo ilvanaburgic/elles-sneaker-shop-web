@@ -22,6 +22,46 @@
       <span>
         <!--OVO OVDJE JE MJESTO ZA Paragraf - description-->
       </span>
+      <a href="#" id="openReviewModal" style="display: inline-block; margin-top: 20px;">Leave a review and rating</a>
+
+      <!-- Review Modal -->
+      <div id="reviewModal" class="modal" style="display: none;">
+        <div class="modal-content"
+          style="padding: 20px; background: white; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 0 15px rgba(0,0,0,0.2);">
+          <span id="closeModal" style="float: right; cursor: pointer;">&times;</span>
+          <h3>Leave a Review</h3>
+          <label for="rating">Rating:</label>
+          <select id="rating" style="width: 100%;">
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+          </select>
+          <br><br>
+          <label for="reviewText">Review:</label>
+          <textarea id="reviewText" rows="4" style="width: 100%;"></textarea>
+          <br><br>
+          <button onclick="submitReview()" class="normal">Submit</button>
+          <p id="reviewMessage" style="margin-top: 10px;"></p>
+        </div>
+      </div>
+
+      <!-- Optional: Modal background styling -->
+      <style>
+        .modal {
+          position: fixed;
+          z-index: 10;
+          padding-top: 100px;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+      </style>
+
     </div>
   </section>
 </body>
@@ -43,6 +83,51 @@
 
 <script src="../utils/utils.js"></script>
 <script>
+  document.getElementById('openReviewModal').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('reviewModal').style.display = 'block';
+  });
+  document.getElementById('closeModal').addEventListener('click', function () {
+    document.getElementById('reviewModal').style.display = 'none';
+  });
+
+  function submitReview() {
+    const productId = localStorage.getItem("productId");
+    const rating = document.getElementById('rating').value;
+    const review = document.getElementById('reviewText').value;
+    const message = document.getElementById('reviewMessage');
+
+    if (!rating || !review) {
+      message.textContent = "Please enter both a rating and a review.";
+      message.style.color = 'red';
+      return;
+    }
+
+    $.ajax({
+      url: '/backend/reviews',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        product_id: productId,
+        rating: parseInt(rating),
+        review: review
+      }),
+      success: function (response) {
+        message.textContent = "Thank you for your review!";
+        message.style.color = 'green';
+        setTimeout(() => {
+          document.getElementById('reviewModal').style.display = 'none';
+          document.getElementById('reviewText').value = '';
+          message.textContent = '';
+        }, 2000);
+      },
+      error: function (xhr, status, error) {
+        message.textContent = "Failed to submit review: " + error;
+        message.style.color = 'red';
+      }
+    });
+  }
+
   function loadProductDetails() {
     var productId = localStorage.getItem("productId");
     $.ajax({
@@ -56,10 +141,8 @@
         const products = data.data;
         var product = products.find(p => p.id.toString() === productId);
         if (product) {
-          // Prikaz svih slika (jedna ispod druge)
           const singleProImage = document.querySelector('.single-pro-image');
-          singleProImage.innerHTML = ''; // očisti slike
-
+          singleProImage.innerHTML = '';
           product.image.split(',').forEach(img => {
             const imgElement = document.createElement('img');
             imgElement.src = img.trim();
@@ -68,7 +151,6 @@
             singleProImage.appendChild(imgElement);
           });
 
-          // Prikaz detalja
           document.querySelector('.single-pro-details h6').textContent = product.brand;
           document.querySelector('.single-pro-details h4').textContent = product.name;
           document.querySelector('.single-pro-details h3').textContent = `$${product.price}`;
@@ -83,7 +165,6 @@
     });
   }
 
-  // Poziv prilikom učitavanja i hash promjene
   $(document).ready(function () {
     loadProductDetails();
   });
@@ -91,6 +172,7 @@
     loadProductDetails();
   });
 </script>
+
 
 
 <!--PORUKA ZA EMAIL-->
@@ -122,6 +204,5 @@
     }
   }
 </script>
-
 
 </html>

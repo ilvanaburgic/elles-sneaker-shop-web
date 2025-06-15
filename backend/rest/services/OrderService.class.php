@@ -17,6 +17,19 @@ class OrderService
     $this->userDao = new UserDao();
   }
 
+  //to return array of objects with details about products, including their id, and price_at_time_of_order - maing order history for that user
+  public function getOrderHistory($user_id)
+  {
+    $orders = $this->orderDao->getOrdersByUserId($user_id);
+
+    foreach ($orders as &$order) {
+      $order['items'] = $this->orderDao->getOrderItemsByOrderId($order['id']);
+    }
+
+    return $orders;
+  }
+
+
   public function createOrderWithUser($orderDetails)
   {
     $user = $this->userDao->getUserByEmail($orderDetails['user']['email']);

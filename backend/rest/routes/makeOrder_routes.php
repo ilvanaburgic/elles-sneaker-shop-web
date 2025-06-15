@@ -112,3 +112,26 @@ Flight::route('POST /order', function () {
         'order' => $order
     ]);
 });
+
+/**
+ * @OA\Get(
+ *     path="/order/history/{user_id}",
+ *     tags={"order"},
+ *     summary="Get order history for a user",
+ *     @OA\Parameter(
+ *         name="user_id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order history retrieved"
+ *     )
+ * )
+ */
+Flight::route('GET /order/history/@user_id', function ($user_id) {
+    $history = Flight::orderService()->getOrderHistory($user_id);
+    Flight::json($history);
+});
+

@@ -50,6 +50,13 @@
     </div>
   </section>
 
+  <section id="order-history-section">
+    <h2>Your Order History</h2>
+    <div id="order-history">
+      <!-- Orders will be dynamically inserted here -->
+    </div>
+  </section>
+
   <script>
     //ovaj blok koda provjerava jesu li podaci dobro uneseni u "Profile Setting"
     function validateProfileSettings() {
@@ -120,6 +127,54 @@
       messageElement.style.color = 'red';
     }
   }
+</script>
+
+<script>
+  $(document).ready(function () {
+    const userId = localStorage.getItem("user_id"); // Or however you store user ID
+
+    if (!userId) {
+      $('#order-history').html('<p>Please log in to view your order history.</p>');
+      return;
+    }
+
+    $.ajax({
+      url: '/backend/order/history/' + userId,
+      type: 'GET',
+      success: function (orders) {
+        if (!orders || orders.length === 0) {
+          $('#order-history').html('<p>No past orders found.</p>');
+          return;
+        }
+
+        let html = '';
+        orders.forEach(order => {
+          html += `
+          <div class="order">
+            <h3>Order #${order.id}</h3>
+            <p>Status: <strong>${order.status}</strong></p>
+            <p>Placed on: ${new Date(order.created_at).toLocaleDateString()}</p>
+            <p>Total: $${order.total_price}</p>
+            <h4>Items:</h4>
+            <ul>
+              ${order.items.map(item => `
+                <li>Product ID: ${item.product_id}, Price: $${item.price_at_time_of_order}</li>
+              `).join('')}
+            </ul>
+          </div>
+          <hr/>
+        `;
+        });
+
+        $('#order-history').html(html);
+      },
+      error: function (err) {
+        $('#order-history').html('<p>Error fetching order history.</p>');
+        console.error("Order history fetch failed:", err);
+      }
+    });
+  });
+
 </script>
 
 

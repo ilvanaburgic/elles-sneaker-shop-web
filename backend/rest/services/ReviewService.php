@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../dao/ReviewDao.php';
+require_once __DIR__ . '/../dao/ReviewDao.class.php';
 
 class ReviewService
 {

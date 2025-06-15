@@ -5,11 +5,8 @@
   <!--IMAGES - SECTION-->
 
   <section id="prodetails" class="section-p1">
-    <div class="single-pro-image">
-      <img src="" width="100%" id="MainImg" alt="">
-      <div class="small-img-group">
-      </div>
-    </div>
+    <div class="single-pro-image"></div>
+
 
     <!--NASLOV AND DESCRIPTION AND BUTTONS-->
 
@@ -83,8 +80,9 @@
   </div>
 </section>
 
+
+<script src="../utils/utils.js"></script>
 <script>
-  // Modal open/close
   document.getElementById('openReviewModal').addEventListener('click', function (e) {
     e.preventDefault();
     document.getElementById('reviewModal').style.display = 'block';
@@ -93,9 +91,8 @@
     document.getElementById('reviewModal').style.display = 'none';
   });
 
-  // Submit review
   function submitReview() {
-    const productId = localStorage.getItem("productId"); // used earlier to open product page
+    const productId = localStorage.getItem("productId");
     const rating = document.getElementById('rating').value;
     const review = document.getElementById('reviewText').value;
     const message = document.getElementById('reviewMessage');
@@ -131,7 +128,51 @@
     });
   }
 
+  function loadProductDetails() {
+    var productId = localStorage.getItem("productId");
+    $.ajax({
+      url: '/backend/products',
+      type: 'GET',
+      headers: {
+        "Authorization": JSON.parse(localStorage.getItem("user")).token
+      },
+      dataType: 'json',
+      success: function (data) {
+        const products = data.data;
+        var product = products.find(p => p.id.toString() === productId);
+        if (product) {
+          const singleProImage = document.querySelector('.single-pro-image');
+          singleProImage.innerHTML = '';
+          product.image.split(',').forEach(img => {
+            const imgElement = document.createElement('img');
+            imgElement.src = img.trim();
+            imgElement.style.width = '100%';
+            imgElement.style.marginBottom = '10px';
+            singleProImage.appendChild(imgElement);
+          });
+
+          document.querySelector('.single-pro-details h6').textContent = product.brand;
+          document.querySelector('.single-pro-details h4').textContent = product.name;
+          document.querySelector('.single-pro-details h3').textContent = `$${product.price}`;
+          document.querySelector('.single-pro-details span').textContent = product.description;
+        } else {
+          console.error('Product not found');
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error('Error fetching product:', error);
+      }
+    });
+  }
+
+  $(document).ready(function () {
+    loadProductDetails();
+  });
+  $(window).on('hashchange', function () {
+    loadProductDetails();
+  });
 </script>
+
 
 
 <!--PORUKA ZA EMAIL-->
@@ -142,7 +183,7 @@
 
     if (email && email.includes('@')) {
       $.ajax({
-        url: '/backend/subscribe',
+        url: '/backend/subscribe', // Adjust the URL to where your subscribe endpoint is located
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ email: email }),

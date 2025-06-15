@@ -505,6 +505,12 @@ footer a:hover {
   justify-content: space-between;
 }
 
+.single-pro-image img {
+  width: 100%;  /* prilagodi po želji */
+  display: block;
+  margin-bottom: 10px;
+}
+
 .small-img-col {
   margin-top: 7px;
   flex-basis: 23%;
@@ -943,6 +949,20 @@ body {
 
 .close:hover {
   color: #000;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #66ff99;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 4px;
+  }
+  
+.pro.disabled {
+  opacity: 0.5;
 }
 
 /* Stilovi za formu */

@@ -31,8 +31,14 @@
         <label for="addProductDescription">Description:</label>
         <textarea id="addProductDescription" name="productDescription"></textarea>
 
-        <label for="addProductImage">Image URL:</label>
-        <input type="text" id="addProductImage" name="productImage">
+        <label for="addProductImage1">Main Image URL:</label>
+        <input type="text" id="addProductImage1" name="productImage1">
+
+        <label for="addProductImage2">Additional Image URL:</label>
+        <input type="text" id="addProductImage2" name="productImage2">
+
+        <label for="addProductTags">Tags (new, sale):</label>
+        <input type="text" id="addProductTags" name="productTags">
 
         <input type="submit" value="Add Product">
       </form>
@@ -65,8 +71,12 @@
           name: cleanInput($('#addProductName').val()),
           price: cleanInput($('#addProductPrice').val()),
           description: cleanInput($('#addProductDescription').val()),
-          image: cleanInput($('#addProductImage').val()),
-          brand: 'NIKE'
+          image: [
+            cleanInput($('#addProductImage1').val()),
+            cleanInput($('#addProductImage2').val())
+          ].join(','),
+          brand: 'NIKE',
+          tags: cleanInput($('#addProductTags').val())
         };
 
         console.log(JSON.stringify(productData));
@@ -93,14 +103,61 @@
           success: function (response) {
             alert('Product added successfully!');
             addModal.hide();
+            loadProducts(); 
           },
           error: function (xhr) {
             alert('Error adding product: ' + xhr.responseText);
           }
         });
       });
+
+      // Delegirani event listener za klik na .pro div
+      $('#pro-container').on('click', '.pro', function () {
+        var productId = $(this).data('id');
+        localStorage.setItem("productId", productId);
+        window.location.href = '#sproductAdministrator';
+      });
+
+      loadProducts();
     });
+
+    // Funkcija za dohvat i prikaz proizvoda
+    function loadProducts() {
+      $.ajax({
+        url: '/backend/products',
+        type: 'GET',
+        headers: {
+          "Authorization": JSON.parse(localStorage.getItem("user")).token
+        },
+        success: function (response) {
+          var container = $('#pro-container');
+          container.html('');
+
+          response.data.forEach(function (product) {
+            var productHtml = `
+              <div class="pro ${product.is_active !== 1 ? 'disabled' : ''}" data-id="${product.id}">
+              <img src="${product.image.split(',')[0]}" alt="">
+              <div class="des">
+               <span>${product.brand}</span>
+               <h5>${product.name}</h5>
+               <h4>$${product.price}</h4>
+               <div class="tags">
+                ${product.tags ? product.tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('') : ''}
+               </div>
+             </div>
+          </div>
+    `;
+
+            container.append(productHtml);
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error('Error fetching products:', error);
+        }
+      });
+    }
   </script>
+
 </body>
 
 </html>
